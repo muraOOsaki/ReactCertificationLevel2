@@ -3,7 +3,7 @@ import QuizTypeSelector from './QuizTypeSelector';
 import { QuizContext } from '../context/QuizContext';
 import QuizDisplay from './QuizDisplay';
 
-const MainQuiz: React.FC<> = () => {
+const MainQuiz: React.FC<{}> = () => {
   const { category, difficulty } = useContext(QuizContext);
 
   return (
