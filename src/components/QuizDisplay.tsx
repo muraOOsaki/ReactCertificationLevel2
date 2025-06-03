@@ -72,13 +72,13 @@ const QuizDisplay: React.FC = () => {
     {loading && <h2>Loading...</h2>}
     {!loading && <ul>
       {fetchedQuestions.map((eachQuestion)=>{
-        return (<>
+        return (
           <article key={eachQuestion.question}>
           <p style={{margin: 0}} dangerouslySetInnerHTML={{__html: eachQuestion.question}}/>
           <br/>
           <Answers question={eachQuestion.question} answer={eachQuestion.answers[0]} choices={eachQuestion.answers} onSelect={handleSelectAnswer} onUnselect={handleUnselectAnswer}/>
           </article>
-        </>)
+        )
       })}
     </ul>}
     {allowSubmit && <Link to="/QuizResults" onClick={handleSubmit}>Submit</Link>}

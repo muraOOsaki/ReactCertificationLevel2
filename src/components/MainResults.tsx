@@ -39,9 +39,7 @@ const MainResults: React.FC = () => {
                                     "green" :
                                     (option === userAnswers.find(({question}) => question === eachQuestion.question)!.answer ? "red": "")
                                  )
-                            }}>
-                                {option}
-                    </button>)})}
+                            }} dangerouslySetInnerHTML={{__html: option}}/>)})}
                     <hr/>
           </article>
         </>)

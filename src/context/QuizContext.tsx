@@ -18,15 +18,15 @@ export const QuizContext: Context<{
   setUserAnswers: (arg1: Array<Answers>) => void,
 }> = createContext({
   category: 0,
-  setCategory: (arg1) => {},
+  setCategory: (_arg1) => {},
   difficulty: "",
-  setDifficulty: (arg1) => {},
+  setDifficulty: (_arg1) => {},
 
   fetchedQuestions: [...EmptyQuestionArray],
-  setFetchedQuestions: (arg1) => {},
+  setFetchedQuestions: (_arg1) => {},
 
   userAnswers: [...EmptyAnswers],
-  setUserAnswers: (arg1: Array<Answers>) => {}
+  setUserAnswers: (_arg1) => {}
 });
 
 const QuizContextProvider: React.FC<{children: React.ReactNode}> = ({children}) => {
