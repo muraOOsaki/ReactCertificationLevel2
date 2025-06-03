@@ -1,14 +1,17 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, useRef } from 'react';
 import { QuizContext } from '../context/QuizContext';
 import Answers from './Answers';
+import { Link } from 'react-router';
 
 const MAX_QUESTION_NOS = 5;
 
 const QuizDisplay: React.FC = () => {
-  const { category, difficulty, setCorrectAnswers, setUserAnswers } =
+  const { category, difficulty, setUserAnswers } =
     useContext(QuizContext);
-  // console.log("Rendered");
+  
   const [fetchedQuestions, setFetchedQuestions] = useState<Array<{question : string, answers: Array<string>}>>([]);
+  const [allowSubmit, setAllowSubmit] = useState<boolean>(false)
+  const answeredQuestions = useRef<Array<{question : string, answer: string}>>([])
 
   useEffect(() => {
 
@@ -23,13 +26,41 @@ const QuizDisplay: React.FC = () => {
 
       // return resData.results;
       const fetchedQuestions: Array<{type: string, difficulty: string, category: string, question: string, "correct_answer": string, "incorrect_answers": Array<string>}> = resData.results;
-      setCorrectAnswers(fetchedQuestions.map((eachQuestion)=>{return {question: eachQuestion.question, answer: eachQuestion["correct_answer"]}}));
+
       setFetchedQuestions(fetchedQuestions.map((eachQuestion)=>{return {question: eachQuestion.question, answers: [eachQuestion["correct_answer"], ...eachQuestion["incorrect_answers"]]}}));
     }
 
     fetchCategoryQuestions();
     
   }, [category, difficulty]);
+
+  const handleSelectAnswer = (question: string, selectedAnswer: string) => {
+    console.log("selected answer")
+    const index = answeredQuestions.current.findIndex((eachAnswer)=>eachAnswer.question === question)
+    if(index === -1){
+      answeredQuestions.current.push({question, answer: selectedAnswer})
+    }
+    else{
+      answeredQuestions.current[index].answer = selectedAnswer
+    }
+
+    if(answeredQuestions.current.length === MAX_QUESTION_NOS){
+      setAllowSubmit(true);
+    }
+  }
+
+  const handleUnselectAnswer = (question: string) => {
+    const index = answeredQuestions.current.findIndex((eachAnswer)=>eachAnswer.question === question)
+    if(index > -1){
+      console.log("unselected answer")
+      answeredQuestions.current.splice(index, 1);
+    }
+    setAllowSubmit(false);
+  }
+
+  const handleSubmit = () => {
+    setUserAnswers([...answeredQuestions.current])
+  }
 
   return <><h2>
     {`Quiz : `}
@@ -41,11 +72,12 @@ const QuizDisplay: React.FC = () => {
           <article key={eachQuestion.question}>
           <p style={{margin: 0}} dangerouslySetInnerHTML={{__html: eachQuestion.question}}/>
           <br/>
-          <Answers choices={eachQuestion.answers} onSelect={()=>{console.log("dummy")}}/>
+          <Answers question={eachQuestion.question} answer={eachQuestion.answers[0]} choices={eachQuestion.answers} onSelect={handleSelectAnswer} onUnselect={handleUnselectAnswer}/>
           </article>
         </>)
       })}
     </ul>
+    {allowSubmit && <Link to="/QuizResults" onClick={handleSubmit}>Submit</Link>}
     </>;
 };
 
