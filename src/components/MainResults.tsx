@@ -2,7 +2,6 @@ import type React from "react";
 import { useContext } from "react";
 import { Link } from "react-router";
 import { QuizContext } from "../context/QuizContext";
-import type { FetchedQuestion } from "../context/QuizContext";
 
 const MainResults: React.FC = () => {
     const { fetchedQuestions, 
@@ -49,7 +48,7 @@ const MainResults: React.FC = () => {
         })
     }
     <div style={{
-        color: (score > 2 && score < 4) ? "black" : "white",
+        color: (score >= 2 && score < 4) ? "black" : "white",
         backgroundColor: score < 2 ? "red" : score < 4 ? "yellow" : "green"}}> You scored: {score}</div>
     <Link to="/" onClick={()=>{
         setCategory(0);

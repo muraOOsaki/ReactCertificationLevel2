@@ -10,14 +10,16 @@ const QuizDisplay: React.FC = () => {
     useContext(QuizContext);
   
   const [fetchedQuestions, setFetchedQuestions] = useState<Array<{question : string, answers: Array<string>}>>([]);
+  const [loading, setLoading] = useState<boolean>(false);
   const [allowSubmit, setAllowSubmit] = useState<boolean>(false)
   const answeredQuestions = useRef<Array<{question : string, answer: string}>>([])
 
   useEffect(() => {
 
     const fetchCategoryQuestions = async () => {
+      setLoading(true);
       const response = await fetch(`https://opentdb.com/api.php?amount=${MAX_QUESTION_NOS}&category=${category}&difficulty=${difficulty.toLowerCase()}&type=multiple`)
-      console.log(response.ok);
+      // console.log(response.ok);
       if(!response.ok){
         throw new Error(`Failed to fetch Category: ${category} - ${difficulty} Questions`);
       }
@@ -28,6 +30,7 @@ const QuizDisplay: React.FC = () => {
       const fetchedQuestions: Array<{type: string, difficulty: string, category: string, question: string, "correct_answer": string, "incorrect_answers": Array<string>}> = resData.results;
 
       setFetchedQuestions(fetchedQuestions.map((eachQuestion)=>{return {question: eachQuestion.question, answers: [eachQuestion["correct_answer"], ...eachQuestion["incorrect_answers"]]}}));
+      setLoading(false);
     }
 
     fetchCategoryQuestions();
@@ -35,7 +38,7 @@ const QuizDisplay: React.FC = () => {
   }, [category, difficulty]);
 
   const handleSelectAnswer = (question: string, selectedAnswer: string) => {
-    console.log("selected answer")
+    // console.log("selected answer")
     const index = answeredQuestions.current.findIndex((eachAnswer)=>eachAnswer.question === question)
     if(index === -1){
       answeredQuestions.current.push({question, answer: selectedAnswer})
@@ -52,7 +55,7 @@ const QuizDisplay: React.FC = () => {
   const handleUnselectAnswer = (question: string) => {
     const index = answeredQuestions.current.findIndex((eachAnswer)=>eachAnswer.question === question)
     if(index > -1){
-      console.log("unselected answer")
+      // console.log("unselected answer")
       answeredQuestions.current.splice(index, 1);
     }
     setAllowSubmit(false);
@@ -66,7 +69,8 @@ const QuizDisplay: React.FC = () => {
     {`Quiz : `}
     {category} - {difficulty}
     </h2>
-    <ul>
+    {loading && <h2>Loading...</h2>}
+    {!loading && <ul>
       {fetchedQuestions.map((eachQuestion)=>{
         return (<>
           <article key={eachQuestion.question}>
@@ -76,7 +80,7 @@ const QuizDisplay: React.FC = () => {
           </article>
         </>)
       })}
-    </ul>
+    </ul>}
     {allowSubmit && <Link to="/QuizResults" onClick={handleSubmit}>Submit</Link>}
     </>;
 };

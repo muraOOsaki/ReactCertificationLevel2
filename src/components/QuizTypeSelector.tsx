@@ -3,7 +3,7 @@ import {QuizContext} from '../context/QuizContext'
 
 const QuizTypeSelector: React.FC = () => {
 
-  const {setCategory, setDifficulty} = useContext(QuizContext)
+  const {setFetchedQuestions, setCategory, setDifficulty} = useContext(QuizContext)
 
   const [foundCategories, setFoundCategories] = useState<Array<{id: number, name: string}>>([]);
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -29,8 +29,9 @@ const QuizTypeSelector: React.FC = () => {
   }, []);
 
   const handleSubmit = () => {
-    console.log(`Create Quiz: ${selectedCategory} - ${selectedDifficulty} `);
+    // console.log(`Create Quiz: ${selectedCategory} - ${selectedDifficulty} `);
     const chosenCategory = foundCategories.find((eachCategory) => eachCategory.name === selectedCategory)
+    setFetchedQuestions(null);
     setCategory(chosenCategory!.id);
     setDifficulty(selectedDifficulty);
   }
