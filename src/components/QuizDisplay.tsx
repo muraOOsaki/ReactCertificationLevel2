@@ -37,6 +37,7 @@ const QuizDisplay: React.FC = () => {
     
   }, [category, difficulty]);
 
+  // console.log(fetchedQuestions);
   const handleSelectAnswer = (question: string, selectedAnswer: string) => {
     // console.log("selected answer")
     const index = answeredQuestions.current.findIndex((eachAnswer)=>eachAnswer.question === question)
@@ -73,11 +74,13 @@ const QuizDisplay: React.FC = () => {
     {!loading && <ul>
       {fetchedQuestions.map((eachQuestion)=>{
         return (
+          
           <article key={eachQuestion.question}>
           <p style={{margin: 0}} dangerouslySetInnerHTML={{__html: eachQuestion.question}}/>
           <br/>
           <Answers question={eachQuestion.question} answer={eachQuestion.answers[0]} choices={eachQuestion.answers} onSelect={handleSelectAnswer} onUnselect={handleUnselectAnswer}/>
           </article>
+          
         )
       })}
     </ul>}
