@@ -5,9 +5,9 @@ const QuizTypeSelector: React.FC = () => {
 
   const {setCategory, setDifficulty} = useContext(QuizContext)
 
-  const [foundCategories, setFoundCategories] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState({id: 0, value: "Select a Category"});
-  const [selectedDifficulty, setSelectedDifficulty] = useState("Select a Difficulty");
+  const [foundCategories, setFoundCategories] = useState<Array<{id: number, name: string}>>([]);
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedDifficulty, setSelectedDifficulty] = useState("Easy");
   
   useEffect(() => {
     async function fetchCategory() {
@@ -18,26 +18,38 @@ const QuizTypeSelector: React.FC = () => {
       }
 
       const resData = await response.json();
-      return resData["trivia_categories"];
+      const categoryList: Array<{id: number, name: string}> =  resData["trivia_categories"];
+      setSelectedCategory(categoryList[0].name);
+      setFoundCategories(categoryList.map(({id, name})=>{
+        return {id, name}
+      }))
     }
 
-    const categoryList = await fetchCategory();
-
-    setFoundCategories(categoryList.map(({id, name})=>{
-      return {id, name}
-    }))
-
+    fetchCategory();
   }, []);
 
   const handleSubmit = () => {
-    setCategory(selectedCategory.id);
+    console.log(`Create Quiz: ${selectedCategory} - ${selectedDifficulty} `);
+    const chosenCategory = foundCategories.find((eachCategory) => eachCategory.name === selectedCategory)
+    setCategory(chosenCategory!.id);
     setDifficulty(selectedDifficulty);
   }
 
   return (
     <>
-      <select id="categorySelect" value={selectedCategory.value} onChange={(e)=>{setSelectedCategory({id: e.target.id,value: e.target.value})}}>
-        {foundCategories.map(({id, name})=><option key={id} id={id} value={name}>{name}</option>)}
+      <select id="categorySelect" 
+              value={selectedCategory} 
+              defaultValue={"Select a Category"}
+              onChange={(e)=>{setSelectedCategory(e.target.value)}}>
+        {
+          foundCategories.map
+          (({id, name})=>
+            {
+              // console.log(`id: ${id} , name: ${name}`)
+              return <option key={id} value={name}>{name}</option>
+            }
+          )
+        }
       </select>
       <select id="difficultySelect" value={selectedDifficulty} onChange={(e)=>{setSelectedDifficulty(e.target.value)}}>
         <option value="Easy">

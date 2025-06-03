@@ -5,12 +5,11 @@ import QuizDisplay from './QuizDisplay';
 
 const MainQuiz: React.FC<{}> = () => {
   const { category, difficulty } = useContext(QuizContext);
-
   return (
     <>
       <h2>Quiz Maker</h2>
       <QuizTypeSelector />
-      {category !== '' && difficulty !== '' && <QuizDisplay />}
+      {(category !== 0 && difficulty !== "") && <QuizDisplay/>}
     </>
   );
 };

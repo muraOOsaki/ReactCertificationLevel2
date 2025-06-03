@@ -1,0 +1,7 @@
+.choiceBtn {
+    background-color: grey;
+}
+
+.choiceBtn:hover{
+    background-color: green;
+}
