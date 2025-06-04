@@ -7,8 +7,7 @@ const MainResults: React.FC = () => {
     const { fetchedQuestions, 
             userAnswers, 
             setCategory, 
-            setDifficulty, 
-            setFetchedQuestions } = useContext(QuizContext)
+            setDifficulty } = useContext(QuizContext)
     
 
     let score = 0;
@@ -23,7 +22,7 @@ const MainResults: React.FC = () => {
     <h1>Results</h1>
 
     {fetchedQuestions.map((eachQuestion)=>{
-        return (<>
+        return (
           <article key={eachQuestion.question}>
           <p style={{margin: 0}} dangerouslySetInnerHTML={{__html: eachQuestion.question}}/>
           <br/>
@@ -42,7 +41,7 @@ const MainResults: React.FC = () => {
                             }} dangerouslySetInnerHTML={{__html: option}}/>)})}
                     <hr/>
           </article>
-        </>)
+        )
         })
     }
     <div style={{
@@ -51,7 +50,6 @@ const MainResults: React.FC = () => {
     <Link to="/" onClick={()=>{
         setCategory(0);
         setDifficulty("Easy");
-        setFetchedQuestions(null);
     }}>Create a new Quiz</Link>
     </>)
 }

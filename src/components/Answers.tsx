@@ -10,28 +10,33 @@ const Answers: React.FC<{
                         choices: Array<string>, 
                         onSelect: (arg1: string, arg2: string)=>void, 
                         onUnselect: (arg1: string)=>void
-                        }> = ({question, answer, choices, onSelect, onUnselect}) => {
+                        }> = ({question, choices, onSelect, onUnselect}) => {
 
     const [selectedAnswer, setSelectedAnswer] = useState<string>("");
-    const randomChoices = useRef<Array<string>>([]);
+    // const randomChoices = useRef<Array<string>>([]);
 
-    const {setFetchedQuestions: setContextFetchedQuestions} = useContext(QuizContext)
+    // const {removeFetchedQuestion, setFetchedQuestions: setContextFetchedQuestions} = useContext(QuizContext)
     
-    if(randomChoices.current.length === 0){
-        randomChoices.current = [...choices].sort(()=> Math.random() - 0.5)
-        const fetchedQuestion: FetchedQuestion = {question: question, options: [...randomChoices.current], correctAnswer: answer }
-        setContextFetchedQuestions(fetchedQuestion)
-        //Moving it to useEffect causes it to do it twice... Maybe add a return function to clear the state...
-    }
+    // if(randomChoices.current.length === 0){
+    //     randomChoices.current = [...choices].sort(()=> Math.random() - 0.5)
+    //     //Moving it to useEffect causes it to do it twice... Maybe add a return function to clear the state...
+    // }
 
-    useEffect(()=>{
+    // useEffect(()=>{
 
-    },[randomChoices.current])
+    //     const fetchedQuestion: FetchedQuestion = {question: question, options: [...randomChoices.current], correctAnswer: answer }
+    //     setContextFetchedQuestions(fetchedQuestion)
+
+    //     return () => {
+    //         removeFetchedQuestion(fetchedQuestion)
+    //     }
+
+    // },[])
 
     // console.log("Render")
     // console.log(randomChoices.current);
     return <>
-        {randomChoices.current.map((eachChoice) => {
+        {choices.map((eachChoice) => {
             // console.log(eachChoice);
             return <button 
                         key={eachChoice} 

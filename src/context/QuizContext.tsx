@@ -12,7 +12,7 @@ export const QuizContext: Context<{
   setDifficulty: (arg1: string)=>void,
 
   fetchedQuestions: Array<FetchedQuestion>,
-  setFetchedQuestions: (arg1: FetchedQuestion | null) => void,
+  setFetchedQuestions: (arg1: Array<FetchedQuestion>) => void,
 
   userAnswers: Array<Answers>,
   setUserAnswers: (arg1: Array<Answers>) => void,
@@ -35,24 +35,21 @@ const QuizContextProvider: React.FC<{children: React.ReactNode}> = ({children}) 
   const [difficulty, setDifficulty] = useState("");
 
   const handleCategoryChange = (selectedCategory: number) => {
-    // console.log("Context setCategory called - " + selectedCategory);
     setCategory(selectedCategory);
   }
 
   const handleDifficultyChange = (selectedDifficulty: string) => {
-    // console.log("Context setDifficulty called - " + selectedDifficulty);
     setDifficulty(selectedDifficulty);
   }
 
   const [fetchedQuestions, setFetchedQuestions] = useState<Array<FetchedQuestion>>([]);
   
-  const handleSetFetchedQuestions = (fetchedQuestions: FetchedQuestion|null) => {
-      if(fetchedQuestions !== null){
-        setFetchedQuestions((currentQuestions) => {return [...currentQuestions, fetchedQuestions]})}
+  const handleSetFetchedQuestions = (fetchedQuestions: Array<FetchedQuestion>) => {
+      if(fetchedQuestions.length > 0){
+        setFetchedQuestions(fetchedQuestions.map((eachQuestion)=>{return {question: eachQuestion.question, options: [...eachQuestion.options], correctAnswer: eachQuestion.correctAnswer}}))}
       else{
         setFetchedQuestions([]);
       }
-      // setFetchedQuestions(fetchedQuestions.map((eachQuestion)=>{return {question: eachQuestion.question, options: eachQuestion.options, correctAnswer: eachQuestion.correctAnswer}}))
   }
 
   const [userAnswers, setUserAnswers] = useState<Array<Answers>>([]);

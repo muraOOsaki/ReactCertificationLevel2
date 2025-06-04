@@ -1,16 +1,22 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, useRef } from 'react';
 import {QuizContext} from '../context/QuizContext'
 
 const QuizTypeSelector: React.FC = () => {
 
-  const {setFetchedQuestions, setCategory, setDifficulty} = useContext(QuizContext)
+  const {setCategory, setDifficulty} = useContext(QuizContext)
 
   const [foundCategories, setFoundCategories] = useState<Array<{id: number, name: string}>>([]);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedDifficulty, setSelectedDifficulty] = useState("Easy");
+
+  const isFetchingRef = useRef<boolean>(false)
   
   useEffect(() => {
     async function fetchCategory() {
+      if(isFetchingRef.current){
+        return;
+      }
+      isFetchingRef.current = true;
       const response = await fetch('https://opentdb.com/api_category.php');
 
       if (!response.ok) {
@@ -26,12 +32,15 @@ const QuizTypeSelector: React.FC = () => {
     }
 
     fetchCategory();
+
+    return () => {
+      isFetchingRef.current = false;
+    }
   }, []);
 
   const handleSubmit = () => {
-    // console.log(`Create Quiz: ${selectedCategory} - ${selectedDifficulty} `);
     const chosenCategory = foundCategories.find((eachCategory) => eachCategory.name === selectedCategory)
-    setFetchedQuestions(null);
+
     setCategory(chosenCategory!.id);
     setDifficulty(selectedDifficulty);
   }
