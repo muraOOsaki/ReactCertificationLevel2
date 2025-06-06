@@ -31,7 +31,7 @@ const QuizDisplay: React.FC = () => {
       // console.log(response.ok);
       if(!response.ok){
         if(response.status === 429){
-          setError("Server too many Requests, Please choose another category and try again");
+          setError("Server: Too many Requests, Please choose another category and try again");
         }
         else{
           setError(response.statusText);
