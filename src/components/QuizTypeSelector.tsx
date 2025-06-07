@@ -10,8 +10,8 @@ const QuizTypeSelector: React.FC = () => {
   const [foundCategories, setFoundCategories] = useState<Array<{id: number, name: string}>>([]);
   const [error, setError] = useState<string>("");
 
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [selectedDifficulty, setSelectedDifficulty] = useState("Easy");
+  const [selectedCategory, setSelectedCategory] = useState("Select a Category");
+  const [selectedDifficulty, setSelectedDifficulty] = useState("Select a Difficulty");
 
   
   useEffect(() => {
@@ -31,7 +31,7 @@ const QuizTypeSelector: React.FC = () => {
 
       const resData = await response.json();
       const categoryList: Array<{id: number, name: string}> =  resData["trivia_categories"];
-      setSelectedCategory(categoryList[0].name);
+      //setSelectedCategory(categoryList[0].name);
       setFoundCategories(categoryList.map(({id, name})=>{
         return {id, name}
       }))
@@ -50,9 +50,9 @@ const QuizTypeSelector: React.FC = () => {
 
   const handleSubmit = () => {
     const chosenCategory = foundCategories.find((eachCategory) => eachCategory.name === selectedCategory)
-
-    setCategory(chosenCategory!.id);
-    setDifficulty(selectedDifficulty);
+    if(chosenCategory !== undefined && selectedDifficulty !== 'Select a Difficulty'){
+      setCategory(chosenCategory!.id);
+      setDifficulty(selectedDifficulty);}
   }
 
   return (
@@ -60,6 +60,9 @@ const QuizTypeSelector: React.FC = () => {
       <select id="categorySelect" 
               value={selectedCategory}
               onChange={(e)=>{setSelectedCategory(e.target.value)}}>
+              <option value="Select a Category" unselectable='on'>
+                Select a Category
+              </option>
         {
           foundCategories.map
           (({id, name})=>
@@ -71,6 +74,9 @@ const QuizTypeSelector: React.FC = () => {
         }
       </select>
       <select id="difficultySelect" value={selectedDifficulty} onChange={(e)=>{setSelectedDifficulty(e.target.value)}}>
+        <option value="Select a Diffculty" unselectable='on'>
+          Select a Difficulty
+        </option>
         <option value="Easy">
           Easy
         </option>
