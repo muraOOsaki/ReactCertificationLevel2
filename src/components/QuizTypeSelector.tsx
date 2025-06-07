@@ -58,7 +58,7 @@ const QuizTypeSelector: React.FC = () => {
   return (
     <>
       <select id="categorySelect" 
-              value={selectedCategory} 
+              value={selectedCategory}
               onChange={(e)=>{setSelectedCategory(e.target.value)}}>
         {
           foundCategories.map
