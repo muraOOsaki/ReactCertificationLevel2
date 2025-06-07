@@ -1,6 +1,6 @@
 import React from "react";
 import { useState } from "react";
-import classes from './Answers.module.css';
+import "./Answers.css"
 
 const Answers: React.FC<{
                         question: string,
@@ -13,14 +13,14 @@ const Answers: React.FC<{
     const [selectedAnswer, setSelectedAnswer] = useState<string>("");
     return <>
         {choices.map((eachChoice) => {
-            // console.log(eachChoice);
+            
             return <button 
                         key={eachChoice} 
-                        className={classes.choiceBtn}
+                        className="choiceBtn"
                         style={{backgroundColor: selectedAnswer === eachChoice ? "green" : undefined, marginRight: "10px", marginBottom: "25px"}}
                         onClick={()=>{
                             if(eachChoice !== selectedAnswer){
-                                // onUnselect(question)
+                                
                                 onSelect(question, eachChoice)
                                 setSelectedAnswer(eachChoice)
                             }

@@ -4,6 +4,7 @@ import Answers from './Answers';
 import { Link } from 'react-router';
 
 const MAX_QUESTION_NOS = 5;
+let isFetching = false;
 
 const QuizDisplay: React.FC = () => {
   const { category, difficulty, setUserAnswers, fetchedQuestions: contextFetchedQuestions, setFetchedQuestions: setContextFetchedQuestions } =
@@ -15,50 +16,49 @@ const QuizDisplay: React.FC = () => {
   const [allowSubmit, setAllowSubmit] = useState<boolean>(false)
   const answeredQuestions = useRef<Array<{question : string, answer: string}>>([])
 
-  const isFetchingRef = useRef<boolean>(false);
+  // const isFetchingRef = useRef<boolean>(false);
 
   useEffect(() => {
 
     const fetchCategoryQuestions = async () => {
-      if(isFetchingRef.current){
-        return;
-      }
       
-      isFetchingRef.current = true;
-      setLoading(true);
-      setError("");
-      const response = await fetch(`https://opentdb.com/api.php?amount=${MAX_QUESTION_NOS}&category=${category}&difficulty=${difficulty.toLowerCase()}&type=multiple`)
+      try{
+        if(isFetching){
+          return;
+        }
+      
+        isFetching = true;
+        setLoading(true);
+        setError("");
+        const response = await fetch(`https://opentdb.com/api.php?amount=${MAX_QUESTION_NOS}&category=${category}&difficulty=${difficulty.toLowerCase()}&type=multiple`)
       // console.log(response.ok);
-      if(!response.ok){
-        if(response.status === 429){
-          setError("Server: Too many Requests, Please choose another category and try again");
+        if(!response.ok){
+          throw new Error(`Failed to fetch Category: ${category} - ${difficulty} Questions`);
         }
-        else{
-          setError(response.statusText);
-        }
-        throw new Error(`Failed to fetch Category: ${category} - ${difficulty} Questions`);
-      }
 
-      const resData = await response.json();
+        const resData = await response.json();
 
-      const responseFetchedQuestions: Array<{type: string, difficulty: string, category: string, question: string, "correct_answer": string, "incorrect_answers": Array<string>}> = resData.results;
+        const responseFetchedQuestions: Array<{type: string, difficulty: string, category: string, question: string, "correct_answer": string, "incorrect_answers": Array<string>}> = resData.results;
 
-      setFetchedQuestions(responseFetchedQuestions.map((eachQuestion)=>{return {question: eachQuestion.question, answers: [eachQuestion["correct_answer"], ...eachQuestion["incorrect_answers"]]}}));
-      setContextFetchedQuestions(responseFetchedQuestions.map((eachQuestion)=>{return {question: eachQuestion.question, options: [eachQuestion["correct_answer"], ...eachQuestion["incorrect_answers"]].sort(()=>Math.random()-0.5), correctAnswer: eachQuestion["correct_answer"]} }))
-      setLoading(false);
+        setFetchedQuestions(responseFetchedQuestions.map((eachQuestion)=>{return {question: eachQuestion.question, answers: [eachQuestion["correct_answer"], ...eachQuestion["incorrect_answers"]]}}));
+        setContextFetchedQuestions(responseFetchedQuestions.map((eachQuestion)=>{return {question: eachQuestion.question, options: [eachQuestion["correct_answer"], ...eachQuestion["incorrect_answers"]].sort(()=>Math.random()-0.5), correctAnswer: eachQuestion["correct_answer"]} }))
+        setLoading(false);
+    }
+    catch(error){
+      setError(`${error.message}. Please select a different category and try again...`);
+    }
     }
 
     fetchCategoryQuestions();
 
     return () => {
-      isFetchingRef.current = false;
+      isFetching = false;
     }
     
   }, [category, difficulty]);
 
-  // console.log(fetchedQuestions);
   const handleSelectAnswer = (question: string, selectedAnswer: string) => {
-    // console.log("selected answer")
+   
     const index = answeredQuestions.current.findIndex((eachAnswer)=>eachAnswer.question === question)
     if(index === -1){
       answeredQuestions.current.push({question, answer: selectedAnswer})

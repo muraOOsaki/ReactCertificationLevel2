@@ -1,22 +1,28 @@
-import { useState, useEffect, useContext, useRef } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {QuizContext} from '../context/QuizContext'
+
+let isFetching = false;
 
 const QuizTypeSelector: React.FC = () => {
 
   const {setCategory, setDifficulty} = useContext(QuizContext)
 
   const [foundCategories, setFoundCategories] = useState<Array<{id: number, name: string}>>([]);
+  const [error, setError] = useState<string>("");
+
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedDifficulty, setSelectedDifficulty] = useState("Easy");
 
-  const isFetchingRef = useRef<boolean>(false)
   
   useEffect(() => {
+    
     async function fetchCategory() {
-      if(isFetchingRef.current){
+      try{
+      if(isFetching){
         return;
       }
-      isFetchingRef.current = true;
+      isFetching = true;
+      setError("");
       const response = await fetch('https://opentdb.com/api_category.php');
 
       if (!response.ok) {
@@ -30,11 +36,15 @@ const QuizTypeSelector: React.FC = () => {
         return {id, name}
       }))
     }
-
+    catch(error){
+      setError(error.message);
+    }
+    }
+  
     fetchCategory();
-
+  
     return () => {
-      isFetchingRef.current = false;
+      isFetching = false;
     }
   }, []);
 
@@ -72,6 +82,7 @@ const QuizTypeSelector: React.FC = () => {
         </option>
       </select>
       <button id="createBtn" onClick={handleSubmit}>Create Quiz</button>
+      {error && <h3>{error}</h3>}
     </>
   );
 };
