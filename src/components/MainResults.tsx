@@ -47,10 +47,10 @@ const MainResults: React.FC = () => {
     <div style={{
         color: (score >= 2 && score < 4) ? "black" : "white",
         backgroundColor: score < 2 ? "red" : score < 4 ? "yellow" : "green"}}> You scored: {score}</div>
-    <Link to="/" onClick={()=>{
+    <button><Link to="/" onClick={()=>{
         setCategory(0);
         setDifficulty("Easy");
-    }}>Create a new Quiz</Link>
+    }}>Create a new Quiz</Link></button>
     </>)
 }
 

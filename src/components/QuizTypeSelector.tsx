@@ -37,7 +37,11 @@ const QuizTypeSelector: React.FC = () => {
       }))
     }
     catch(error){
-      setError(error.message);
+      if(error instanceof Error){
+        setError(`${error.message}`);}
+        else{
+          setError(`Unknown Error: ${error}`)
+        }
     }
     }
   
@@ -60,7 +64,7 @@ const QuizTypeSelector: React.FC = () => {
       <select id="categorySelect" 
               value={selectedCategory}
               onChange={(e)=>{setSelectedCategory(e.target.value)}}>
-              <option value="Select a Category" unselectable='on'>
+              <option value="Select a Category" disabled>
                 Select a Category
               </option>
         {
@@ -73,8 +77,8 @@ const QuizTypeSelector: React.FC = () => {
           )
         }
       </select>
-      <select id="difficultySelect" value={selectedDifficulty} onChange={(e)=>{setSelectedDifficulty(e.target.value)}}>
-        <option value="Select a Diffculty" unselectable='on'>
+      <select id="difficultySelect"  value={selectedDifficulty} onChange={(e)=>{setSelectedDifficulty(e.target.value)}}>
+        <option value="Select a Difficulty" disabled>
           Select a Difficulty
         </option>
         <option value="Easy">

@@ -45,7 +45,11 @@ const QuizDisplay: React.FC = () => {
         setLoading(false);
     }
     catch(error){
-      setError(`${error.message}. Please select a different category and try again...`);
+      if(error instanceof Error){
+      setError(`${error.message}. Please select a different category and try again...`);}
+      else{
+        setError(`Unknown Error: ${error}`)
+      }
     }
     }
 
@@ -103,7 +107,7 @@ const QuizDisplay: React.FC = () => {
         })
       }
     </ul>}
-    {allowSubmit && <Link to="/QuizResults" onClick={handleSubmit}>Submit</Link>}
+    {allowSubmit && <button><Link to="/QuizResults" onClick={handleSubmit}>Submit</Link></button>}
     </>;
 };
 
